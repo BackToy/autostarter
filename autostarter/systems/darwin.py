@@ -1,5 +1,6 @@
 import os
 import plistlib
+
 from autostarter.util import remove_list
 
 """
@@ -8,6 +9,15 @@ Darwin-specific functions for managing launch agents.
 A launch agent is a background process that runs on macOS. This module provides
 functions for adding and removing launch agents.
 """
+
+
+def check(identifier: str, system_wide: bool = False) -> bool:
+    """
+    Check if the startup script is enabled.
+    """
+    start_file = f'{_startup_folder(system_wide)}/{identifier}.plist'
+    return os.path.exists(start_file)
+
 
 def add(identifier: str, script_location: str, interpreter: str = 'sh',
     system_wide: bool = False, arguments: str = '') -> None:
@@ -43,6 +53,7 @@ def add(identifier: str, script_location: str, interpreter: str = 'sh',
     else: # Support plistlib < python 3.9
         plistlib.writePlist(plist, start_file)
 
+
 def remove(identifier: str, system_wide: bool = False) -> bool:
     """
     Remove an existing launch agent.
@@ -59,6 +70,7 @@ def remove(identifier: str, system_wide: bool = False) -> bool:
         f'{_startup_folder(system_wide)}/{identifier}.sh'
     ]
     return remove_list(to_delete)
+
 
 def _startup_folder(system_wide: bool) -> str:
     """

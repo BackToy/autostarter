@@ -1,4 +1,5 @@
 import os
+
 from autostarter.util import remove_list
 
 """
@@ -7,6 +8,15 @@ Windows-specific functions for managing startup scripts.
 A startup script is a script that runs automatically when the system boots up. This module provides
 functions for adding and removing startup scripts.
 """
+
+
+def check(identifier: str, system_wide: bool = False) -> bool:
+    """
+    Check if the startup script is enabled.
+    """
+    start_file = f'{_startup_folder(system_wide)}\\{identifier}.bat'
+    return os.path.exists(start_file)
+
 
 def add(identifier: str, script_location: str, interpreter: str = r'cmd \c',
     system_wide: bool = False, arguments: str = '') -> None:
@@ -37,6 +47,7 @@ def remove(identifier: str, system_wide: bool = False) -> bool:
     # Remove batch script from autorun directory
     start_file = f'{_startup_folder(system_wide)}\\{identifier}.bat'
     return remove_list([start_file])
+
 
 def _startup_folder(system_wide):
     """

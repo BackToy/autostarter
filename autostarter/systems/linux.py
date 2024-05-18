@@ -1,4 +1,5 @@
 import os
+
 from autostarter.util import remove_list
 
 """
@@ -7,6 +8,20 @@ Linux-specific functions for managing startup scripts.
 A startup script is a script that runs automatically when the system boots up. This module provides
 functions for adding and removing startup scripts.
 """
+
+
+def check(identifier: str, system_wide: bool = False) -> bool:
+    """
+    Check if the startup script is enabled.
+
+    https://specifications.freedesktop.org/autostart-spec/autostart-spec-latest.html
+    > When the .desktop file has the Hidden key set to true, the .desktop file MUST be ignored.
+    """
+    start_desktop = f'{_startup_folder(system_wide)}/{identifier}.desktop'
+    if os.path.exists(start_desktop):
+        return True
+    return False
+
 
 def add(identifier: str, script_location: str, interpreter: str = 'sh',
     system_wide: bool = False, arguments: str = ''):
@@ -51,6 +66,7 @@ def remove(identifier: str, system_wide: bool = False) -> bool:
         f'{_startup_folder(system_wide)}/{identifier}.desktop'
     ]
     return remove_list(to_delete)
+
 
 def _startup_folder(system_wide):
     """

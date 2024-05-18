@@ -3,12 +3,30 @@ import importlib
 import platform
 import uuid
 
+
 @functools.lru_cache()
 def _get_os_module():
     """
     Returns the OS-specific module for the current operating system.
     """
     return importlib.import_module('autostarter.systems.' + platform.system().lower())
+
+
+def check(identifier, **kwargs):
+    """
+    Check if the startup script is enabled.
+
+    Parameters:
+    - identifier (str): The identifier of the startup script to be removed.
+    - system_wide (bool, optional): If true, will try remove a system wide (all user) startup script
+    Returns: True if the startup script was added and enabled, False otherwise.
+    """
+    try:
+        os_module = _get_os_module()
+        return os_module.check(identifier, **kwargs)
+    except AttributeError as err:
+        raise OSError("Operating system is not supported.") from err
+
 
 def add(script_location, **kwargs):
     """
@@ -35,6 +53,7 @@ def add(script_location, **kwargs):
         raise OSError('Operating system is not supported.') from err
 
     return identifier
+
 
 def remove(identifier, **kwargs):
     """
