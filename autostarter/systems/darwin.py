@@ -15,12 +15,17 @@ def check(identifier: str, system_wide: bool = False) -> bool:
     """
     Check if the startup script is enabled.
     """
-    start_file = f'{_startup_folder(system_wide)}/{identifier}.plist'
+    start_file = f"{_startup_folder(system_wide)}/{identifier}.plist"
     return os.path.exists(start_file)
 
 
-def add(identifier: str, script_location: str, interpreter: str = 'sh',
-    system_wide: bool = False, arguments: str = '') -> None:
+def add(
+    identifier: str,
+    script_location: str,
+    interpreter: str = "sh",
+    system_wide: bool = False,
+    arguments: str = "",
+) -> None:
     """
     Add a new launch agent.
 
@@ -32,25 +37,25 @@ def add(identifier: str, script_location: str, interpreter: str = 'sh',
     arguments: CLI Arguments to provide to script.
     """
     # Create shell script to start program
-    start_file = f'{_startup_folder(system_wide)}/{identifier}'
-    with open(f'{start_file}.sh', 'w') as f:
-        f.write(f'#!/bin/bash\n\n{interpreter} {script_location} {arguments}\n')
+    start_file = f"{_startup_folder(system_wide)}/{identifier}"
+    with open(f"{start_file}.sh", "w") as f:
+        f.write(f"#!/bin/bash\n\n{interpreter} {script_location} {arguments}\n")
 
     # Script must have execute permissions
-    os.chmod(f'{start_file}.sh', 0o755)
+    os.chmod(f"{start_file}.sh", 0o755)
 
     # Create the dictionary for the plist file
     plist = {
-        'Label': identifier,
-        'ProgramArguments': [f'{start_file}.sh'],
-        'RunAtLoad': True
+        "Label": identifier,
+        "ProgramArguments": [f"{start_file}.sh"],
+        "RunAtLoad": True,
     }
 
     # Write the plist file
-    if hasattr(plistlib, 'dump'):
-        with open(f'{start_file}.plist', 'wb') as fp:
+    if hasattr(plistlib, "dump"):
+        with open(f"{start_file}.plist", "wb") as fp:
             plistlib.dump(plist, fp)
-    else: # Support plistlib < python 3.9
+    else:  # Support plistlib < python 3.9
         plistlib.writePlist(plist, start_file)
 
 
@@ -66,8 +71,8 @@ def remove(identifier: str, system_wide: bool = False) -> bool:
     """
     # Remove plist and shell script files
     to_delete = [
-        f'{_startup_folder(system_wide)}/{identifier}.plist',
-        f'{_startup_folder(system_wide)}/{identifier}.sh'
+        f"{_startup_folder(system_wide)}/{identifier}.plist",
+        f"{_startup_folder(system_wide)}/{identifier}.sh",
     ]
     return remove_list(to_delete)
 
@@ -83,5 +88,5 @@ def _startup_folder(system_wide: bool) -> str:
     Returns: The file path of the plist file.
     """
     if system_wide:
-        return  '/Library/LaunchAgents'
-    return os.path.expanduser('~/Library/LaunchAgents')
+        return "/Library/LaunchAgents"
+    return os.path.expanduser("~/Library/LaunchAgents")

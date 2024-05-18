@@ -1,6 +1,7 @@
 import os
 from typing import List
 
+
 def remove_list(to_delete: List[str]) -> bool:
     """Helper to remove list of files.
 
@@ -14,9 +15,9 @@ def remove_list(to_delete: List[str]) -> bool:
         try:
             os.remove(filename)
         except FileNotFoundError:
-            print('File %s tried to be removed, however it was not found', filename)
+            print("File %s tried to be removed, however it was not found", filename)
         except OSError as err:
-            print('Exception occurred while removing file: ' + str(err))
+            print("Exception occurred while removing file: " + str(err))
             return False
 
     return True

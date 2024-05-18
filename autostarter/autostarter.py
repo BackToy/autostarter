@@ -9,7 +9,7 @@ def _get_os_module():
     """
     Returns the OS-specific module for the current operating system.
     """
-    return importlib.import_module('autostarter.systems.' + platform.system().lower())
+    return importlib.import_module("autostarter.systems." + platform.system().lower())
 
 
 def check(identifier, **kwargs):
@@ -41,7 +41,7 @@ def add(script_location, **kwargs):
 
     Returns: The identifier for the added startup script.
     """
-    identifier = kwargs.pop('identifier', None)
+    identifier = kwargs.pop("identifier", None)
     if not identifier:
         # Generate a random UUID if no identifier is provided
         identifier = str(uuid.uuid4())
@@ -50,7 +50,7 @@ def add(script_location, **kwargs):
         os_module = _get_os_module()
         os_module.add(identifier, script_location, **kwargs)
     except AttributeError as err:
-        raise OSError('Operating system is not supported.') from err
+        raise OSError("Operating system is not supported.") from err
 
     return identifier
 
@@ -68,4 +68,4 @@ def remove(identifier, **kwargs):
         os_module = _get_os_module()
         return os_module.remove(identifier, **kwargs)
     except AttributeError as err:
-        raise OSError('Operating system is not supported.') from err
+        raise OSError("Operating system is not supported.") from err

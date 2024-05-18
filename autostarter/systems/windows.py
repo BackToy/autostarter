@@ -14,12 +14,17 @@ def check(identifier: str, system_wide: bool = False) -> bool:
     """
     Check if the startup script is enabled.
     """
-    start_file = f'{_startup_folder(system_wide)}\\{identifier}.bat'
+    start_file = f"{_startup_folder(system_wide)}\\{identifier}.bat"
     return os.path.exists(start_file)
 
 
-def add(identifier: str, script_location: str, interpreter: str = r'cmd \c',
-    system_wide: bool = False, arguments: str = '') -> None:
+def add(
+    identifier: str,
+    script_location: str,
+    interpreter: str = r"cmd \c",
+    system_wide: bool = False,
+    arguments: str = "",
+) -> None:
     """
     Add a new startup script.
 
@@ -31,8 +36,9 @@ def add(identifier: str, script_location: str, interpreter: str = r'cmd \c',
     arguments: CLI Arguments to provide to script.
     """
     # Create batch script in autorun directory
-    with open(f'{_startup_folder(system_wide)}\\{identifier}.bat', 'w') as f:
-        f.write(f'@echo off\n{interpreter} {script_location} {arguments}\n')
+    with open(f"{_startup_folder(system_wide)}\\{identifier}.bat", "w") as f:
+        f.write(f"@echo off\n{interpreter} {script_location} {arguments}\n")
+
 
 def remove(identifier: str, system_wide: bool = False) -> bool:
     """
@@ -45,7 +51,7 @@ def remove(identifier: str, system_wide: bool = False) -> bool:
     Returns: True if the startup script was found and successfully removed, False otherwise.
     """
     # Remove batch script from autorun directory
-    start_file = f'{_startup_folder(system_wide)}\\{identifier}.bat'
+    start_file = f"{_startup_folder(system_wide)}\\{identifier}.bat"
     return remove_list([start_file])
 
 
@@ -59,5 +65,7 @@ def _startup_folder(system_wide):
     Returns: path to folder
     """
     if system_wide:
-        return 'C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp'
-    return os.path.expanduser('~\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup')
+        return "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp"
+    return os.path.expanduser(
+        "~\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup"
+    )

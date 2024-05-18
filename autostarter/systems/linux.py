@@ -17,14 +17,19 @@ def check(identifier: str, system_wide: bool = False) -> bool:
     https://specifications.freedesktop.org/autostart-spec/autostart-spec-latest.html
     > When the .desktop file has the Hidden key set to true, the .desktop file MUST be ignored.
     """
-    start_desktop = f'{_startup_folder(system_wide)}/{identifier}.desktop'
+    start_desktop = f"{_startup_folder(system_wide)}/{identifier}.desktop"
     if os.path.exists(start_desktop):
         return True
     return False
 
 
-def add(identifier: str, script_location: str, interpreter: str = 'sh',
-    system_wide: bool = False, arguments: str = ''):
+def add(
+    identifier: str,
+    script_location: str,
+    interpreter: str = "sh",
+    system_wide: bool = False,
+    arguments: str = "",
+):
     """
     Add a new startup script.
 
@@ -39,16 +44,19 @@ def add(identifier: str, script_location: str, interpreter: str = 'sh',
     start_dir = _startup_folder(system_wide)
     os.makedirs(start_dir, exist_ok=True)
 
-    start_file = f'{start_dir}/{identifier}'
+    start_file = f"{start_dir}/{identifier}"
 
     # Create shell script
-    with open(f'{start_file}.sh', 'w') as f:
-        f.write(f'#!/bin/bash\n\n{interpreter} {script_location} {arguments}\n')
-    os.chmod(f'{start_file}.sh', 0o755)
+    with open(f"{start_file}.sh", "w") as f:
+        f.write(f"#!/bin/bash\n\n{interpreter} {script_location} {arguments}\n")
+    os.chmod(f"{start_file}.sh", 0o755)
 
     # Create .desktop file
-    with open(f'{start_file}.desktop', 'w') as f:
-        f.write(f'[Desktop Entry]\nType=Application\nName={identifier}\nExec={start_file}.sh\n')
+    with open(f"{start_file}.desktop", "w") as f:
+        f.write(
+            f"[Desktop Entry]\nType=Application\nName={identifier}\nExec={start_file}.sh\n"
+        )
+
 
 def remove(identifier: str, system_wide: bool = False) -> bool:
     """
@@ -62,8 +70,8 @@ def remove(identifier: str, system_wide: bool = False) -> bool:
     """
     # Remove desktop and shell script files
     to_delete = [
-        f'{_startup_folder(system_wide)}/{identifier}.sh',
-        f'{_startup_folder(system_wide)}/{identifier}.desktop'
+        f"{_startup_folder(system_wide)}/{identifier}.sh",
+        f"{_startup_folder(system_wide)}/{identifier}.desktop",
     ]
     return remove_list(to_delete)
 
@@ -78,5 +86,5 @@ def _startup_folder(system_wide):
     Returns: path to folder
     """
     if system_wide:
-        return '/etc/init.d'
-    return os.path.expanduser('~/.config/autostart')
+        return "/etc/init.d"
+    return os.path.expanduser("~/.config/autostart")
